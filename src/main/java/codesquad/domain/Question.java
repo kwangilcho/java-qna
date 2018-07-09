@@ -1,13 +1,23 @@
 package codesquad.domain;
 
+import javax.persistence.*;
+import javax.validation.constraints.Size;
+
+@Entity
 public class Question {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Size(min = 1)
+    @Column(nullable = false)
     private String writer;
+    @Size(min = 1)
+    @Column(nullable = false)
     private String title;
     private String contents;
-    private int id;
 
     public Question() {
-
     }
 
     public String getWriter() {
@@ -22,7 +32,7 @@ public class Question {
         return contents;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -38,7 +48,7 @@ public class Question {
         this.contents = contents;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void update(Question target) {
+        contents = target.getContents();
     }
 }
