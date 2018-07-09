@@ -47,10 +47,8 @@ public class UserController {
     @PostMapping("/{userId}")
     public String update(User user) {
         User userOrigin = userRepository.findByUserId(user.getUserId());
-        if (userOrigin.matchPassword(user)) {
-            userOrigin.update(user);
-            userRepository.save(userOrigin);
-        }
+        userOrigin.update(user);
+        userRepository.save(userOrigin);
         return "redirect:/users";
     }
 }

@@ -15,6 +15,7 @@ public class Question {
     @Size(min = 1)
     @Column(nullable = false)
     private String title;
+    @Lob
     private String contents;
 
     public Question() {

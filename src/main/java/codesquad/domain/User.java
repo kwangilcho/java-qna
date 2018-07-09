@@ -9,10 +9,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // TODO: 2018. 7. 9. ";"이 포함된 문자열이 데이터베이스로 넘어가면 안 됩니다. 
     @Size(min = 1)
     @Column(length = 30, unique = true, nullable = false)
     private String userId;
+    @Size(min = 1)
+    @Column(nullable = false)
     private String password;
+    @Size(min = 1)
+    @Column(nullable = false)
     private String name;
     private String email;
 
@@ -59,14 +64,10 @@ public class User {
         this.email = email;
     }
 
-    public boolean matchPassword(User target) {
-        if (target.getPassword().equals(password))
-            return true;
-        return false;
-    }
-
     public void update(User target) {
-        name = target.name;
-        email = target.email;
+        if (target.getPassword().equals(password)) {
+            name = target.name;
+            email = target.email;
+        }
     }
 }

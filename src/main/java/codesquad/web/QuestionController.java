@@ -7,8 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 
 @Controller
+@RequestMapping({ "/", "/questions" })
 public class QuestionController {
     private final String QUESTION_ROOT_PATH = "/questions";
     private long questionId = 0;
@@ -16,42 +19,48 @@ public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @PostMapping(QUESTION_ROOT_PATH)
-    public String create(Question question) {
-        questionRepository.save(question);
-        return "redirect:/";
-    }
-
-    @GetMapping("/")
+    @GetMapping("")
     public String list(Model model) {
         model.addAttribute("questions",questionRepository.findAll());
         return "/index";
     }
 
-    @GetMapping(QUESTION_ROOT_PATH + "/{id}")
+    @PostMapping("")
+    public String create(Question question) {
+        questionRepository.save(question);
+        return "redirect:/";
+    }
+
+    @GetMapping("/{id}")
     public String show(@PathVariable Long id, Model model) {
-        model.addAttribute("question", questionRepository.findById(id).get());
+        model.addAttribute("question", findById(id));
         return "/qna/show";
     }
 
-    @GetMapping(QUESTION_ROOT_PATH + "/{id}/form")
+    @GetMapping("/{id}/form")
     public String showUpdateForm(@PathVariable Long id, Model model) {
-        model.addAttribute("question", questionRepository.findById(id).get());
+        model.addAttribute("question", findById(id));
         return "/qna/updateForm";
     }
 
-    @PostMapping(QUESTION_ROOT_PATH + "/{id}")
+    @PostMapping("/{id}")
     public String update(@PathVariable Long id, Question question) {
-        Question questionOrigin = questionRepository.findById(id).get();
+        Question questionOrigin = findById(id);
         questionOrigin.update(question);
         questionRepository.save(questionOrigin);
         return "redirect:/";
     }
 
-    @DeleteMapping(QUESTION_ROOT_PATH + "/{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
-        Question questionOrigin = questionRepository.findById(id).get();
+        Question questionOrigin = findById(id);
         questionRepository.delete(questionOrigin);
         return "redirect:/";
+    }
+
+    public Question findById(Long id) {
+        Optional<Question> questionOptional = questionRepository.findById(id);
+        questionOptional.orElseThrow(() -> new IllegalArgumentException());
+        return questionOptional.get();
     }
 }
